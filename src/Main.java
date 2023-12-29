@@ -7,5 +7,6 @@ public class Main {
         String filename = "example.txt";
         MapCreator mp = new MapCreator(filename);
         mp.showMap();
+        int simLength = mp.getLength();
     }
 }
