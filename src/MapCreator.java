@@ -21,7 +21,7 @@ public class MapCreator {
             for (int i = 0; i<x_size; i++)
             {
                 for (int j = 0; j<y_size; j++)
-                    newMap[i][j] = '0';
+                    newMap[i][j] = '_';
             }
             int liveCells = Integer.parseInt(br.readLine());
             for (int i = liveCells; i > 0; i--){

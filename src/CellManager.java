@@ -67,12 +67,12 @@ public class CellManager implements Runnable {
             for(int j = 0; j <= map[0].length - 1; j++){
                 int neighbours = CountNeighbours(map, i , j);
 
-                if (map[i][j] == '0' && neighbours == 3){
+                if (map[i][j] == '_' && neighbours == 3){
                     newMap[i][j] = '1';
                 } else if (map[i][j] == '1' && (neighbours == 2 || neighbours == 3)){
                     newMap [i][j] = '1';
                 }
-                else newMap [i][j] = '0';
+                else newMap [i][j] = '_';
             }
         }
     return newMap;
