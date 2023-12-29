@@ -89,6 +89,14 @@ public class CellManager implements Runnable {
         System.out.println(" ");
     }
 
+    public void runProgram(char[][] map, int simLength){
+        for (int i = 0; i<simLength; i++){
+            char[][] newMap = newIteration(map);
+            map = newMap;
+            showMap();
+        }
+    }
+
     public void setMap(char[][] map) {
         this.map = map;
     }
