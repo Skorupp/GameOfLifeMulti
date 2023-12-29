@@ -2,12 +2,12 @@ import java.util.concurrent.*;
 
 public class CellManager implements Runnable {
 
-    private char[][] map;
+    private int[][] map;
     private int rows;
     private int columns;
     private int simLength;
 
-    public CellManager(char[][] map, int simLength) {
+    public CellManager(int[][] map, int simLength) {
         this.map = map;
         this.rows = map.length;
         this.columns = map[0].length;
@@ -20,7 +20,7 @@ public class CellManager implements Runnable {
 
     }
 
-    public Integer CountNeighbours(char[][] map, int row, int col) {
+    public Integer CountNeighbours(int[][] map, int row, int col) {
         int count = 0;
         int x_toCheck;
         int y_toCheck;
@@ -55,32 +55,32 @@ public class CellManager implements Runnable {
                 }
                 ySet = false;
                 xSet = false;
-                if (map[x_toCheck][y_toCheck] == '1') count++;
+                if (map[x_toCheck][y_toCheck] == 1) count++;
             }
         }
         return count;
     }
 
-    public char[][] newIteration (char[][] map){
-        char [][] newMap = map;
+    public int[][] newIteration (int[][] map){
+        int [][] newMap = new int[map.length][map[0].length];
         for (int i = 0; i <= map.length - 1; i++){
             for(int j = 0; j <= map[0].length - 1; j++){
                 int neighbours = CountNeighbours(map, i , j);
 
-                if (map[i][j] == '_' && neighbours == 3){
-                    newMap[i][j] = '1';
-                } else if (map[i][j] == '1' && (neighbours == 2 || neighbours == 3)){
-                    newMap [i][j] = '1';
+                if (map[i][j] == 0 && neighbours == 3){
+                    newMap[i][j] = 1;
+                } else if (map[i][j] == 1 && (neighbours == 2 || neighbours == 3)){
+                    newMap [i][j] = 1;
                 }
-                else newMap [i][j] = '_';
+                else newMap [i][j] = 0;
             }
         }
     return newMap;
     }
 
 
-    public void showMap() {
-        for (int i = 0; i <map.length; i++) {
+    public void showMap(int[][] map) {
+        for (int i = 0; i < map.length; i++) {
             for (int j = 0; j<map[0].length; j++) {
                 System.out.print(map[i][j]);
             }
@@ -89,15 +89,25 @@ public class CellManager implements Runnable {
         System.out.println(" ");
     }
 
-    public void runProgram(char[][] map, int simLength){
+    public void runProgram(int[][] map, int simLength){
         for (int i = 0; i<simLength; i++){
-            char[][] newMap = newIteration(map);
+            System.out.println(CountNeighbours(map, 0, 13));
+            int [][]newMap = newIteration(map);
             map = newMap;
-            showMap();
+            showMap(map);
+            try{
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    public void setMap(char[][] map) {
+    public void setMap(int[][] map) {
         this.map = map;
+    }
+
+    public int[][] getMap() {
+        return map;
     }
 }

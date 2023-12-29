@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 public class MapCreator {
 
-    private char[][] map;
+    private int[][] map;
 
     private int length;
 
@@ -17,11 +17,11 @@ public class MapCreator {
             x_size = Integer.parseInt(br.readLine());
             this.length = Integer.parseInt(br.readLine());
 
-            char newMap[][] = new char[x_size][y_size];
+            int newMap[][] = new int[x_size][y_size];
             for (int i = 0; i<x_size; i++)
             {
                 for (int j = 0; j<y_size; j++)
-                    newMap[i][j] = '_';
+                    newMap[i][j] = 0;
             }
             int liveCells = Integer.parseInt(br.readLine());
             for (int i = liveCells; i > 0; i--){
@@ -29,18 +29,18 @@ public class MapCreator {
                 String[] res = line.split(" ");
                 int y = Integer.parseInt(res[0]);
                 int x = Integer.parseInt(res[1]);
-                newMap[x][y] = '1';
+                newMap[x][y] = 1;
             }
 
             this.map = newMap;
 
         }
 
-    public char[][] getMap() {
+    public int[][] getMap() {
         return map;
     }
 
-    public void setMap(char[][] map) {
+    public void setMap(int[][] map) {
         this.map = map;
     }
 
