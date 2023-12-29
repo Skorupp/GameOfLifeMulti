@@ -4,17 +4,13 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String filename = "torus.txt";
+        String filename = "example.txt";
         MapCreator mp = new MapCreator(filename);
         int simLength = mp.getLength();
-        CellManager cm = new CellManager(mp.getMap(), simLength);
+        char[][] map = mp.getMap();
+        CellManager cm = new CellManager(map, simLength);
         cm.showMap();
         System.out.println(cm.CountNeighbours(mp.getMap(), 0, 0));
-
-        for(int i = 0; i <= 5; i++) {
-            char[][] newMap = cm.newIteration(mp.getMap());
-            cm.setMap(newMap);
-            cm.showMap();
-        }
+        cm.runProgram(map, simLength);
     }
 }
