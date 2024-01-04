@@ -72,21 +72,14 @@ public class CellManager  {
                 for (int i = 0; i < rows; i++) {
                     for (int j = local_col_start; j <= local_col_end; j++) {
                         evNewValue(i, j);
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
                     }
-                }
                     try {
                         barrier.await();
-                        System.out.println(Thread.currentThread().getName() + " is waiting");
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     } catch (BrokenBarrierException e) {
                         throw new RuntimeException(e);
-                    }
+                    }}
             });
             t.start();
             threadList.add(t);
@@ -158,9 +151,9 @@ public class CellManager  {
         showMap();
         for (int i = 0; i<SimLength; i++){
             newGen();
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             showMap();
-            Thread.sleep(500);
+
 
         }
         System.out.println("Stan koncowy:");
