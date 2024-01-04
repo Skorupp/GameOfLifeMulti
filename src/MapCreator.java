@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 public class MapCreator {
@@ -13,8 +12,8 @@ public class MapCreator {
             BufferedReader br = new BufferedReader(fr);
             int x_size;
             int y_size;
-            y_size = Integer.parseInt(br.readLine());
             x_size = Integer.parseInt(br.readLine());
+            y_size = Integer.parseInt(br.readLine());
             this.length = Integer.parseInt(br.readLine());
 
             int newMap[][] = new int[x_size][y_size];
@@ -40,24 +39,10 @@ public class MapCreator {
         return map;
     }
 
-    public void setMap(int[][] map) {
-        this.map = map;
-    }
-
     public int getLength() {
         return length;
     }
 
-    public void setLength(int length) {
-        this.length = length;
-    }
 
-    public void showMap() {
-        for (int i = 0; i <map.length; i++) {
-            for (int j = 0; j<map[0].length; j++) {
-                System.out.print(map[i][j]);
-            }
-            System.out.println(" ");
-        }
-    }
+
 }

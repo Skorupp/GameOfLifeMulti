@@ -1,26 +1,26 @@
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.*;
 
-public class CellManager implements Runnable {
+public class CellManager  {
 
     private int[][] map;
+    private int[][] newMap;
     private int rows;
-    private int columns;
-    private int simLength;
+    private int cols;
+    private int NumThreads;
+    private int SimLength;
 
-    public CellManager(int[][] map, int simLength) {
+    public CellManager(int[][] map, int NumThreads, int SimLength){
         this.map = map;
+        this.NumThreads = NumThreads;
         this.rows = map.length;
-        this.columns = map[0].length;
-        this.simLength = simLength;
+        this.cols = map[0].length;
+        this.SimLength = SimLength;
     }
 
-
-    @Override
-    public void run() {
-
-    }
-
-    public Integer CountNeighbours(int[][] map, int row, int col) {
+    public Integer CountNeighbours(int row, int col) {
         int count = 0;
         int x_toCheck;
         int y_toCheck;
@@ -61,53 +61,117 @@ public class CellManager implements Runnable {
         return count;
     }
 
-    public int[][] newIteration (int[][] map){
-        int [][] newMap = new int[map.length][map[0].length];
-        for (int i = 0; i <= map.length - 1; i++){
-            for(int j = 0; j <= map[0].length - 1; j++){
-                int neighbours = CountNeighbours(map, i , j);
-
-                if (map[i][j] == 0 && neighbours == 3){
-                    newMap[i][j] = 1;
-                } else if (map[i][j] == 1 && (neighbours == 2 || neighbours == 3)){
-                    newMap [i][j] = 1;
+    public void newGen () throws InterruptedException {
+        newMap = new int[rows][cols];
+        CyclicBarrier barrier = new CyclicBarrier(NumThreads);
+        ArrayList<Thread> threadList = new ArrayList<>();
+        for (int id = 0; id < NumThreads; id++) {
+            int local_col_start = StartingCol(id);
+            int local_col_end = EndingCol(id);
+            Thread t = new Thread(() -> {
+                for (int i = 0; i < rows; i++) {
+                    for (int j = local_col_start; j <= local_col_end; j++) {
+                        evNewValue(i, j);
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-                else newMap [i][j] = 0;
-            }
+                    try {
+                        barrier.await();
+                        System.out.println(Thread.currentThread().getName() + " is waiting");
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (BrokenBarrierException e) {
+                        throw new RuntimeException(e);
+                    }
+            });
+            t.start();
+            threadList.add(t);
         }
-    return newMap;
+        for (Thread t: threadList){
+            t.join();
+        }
+        setMap(newMap);
     }
 
+    public void evNewValue (int row, int col){
+        int neighbours = CountNeighbours(row, col);
+            if (map[row][col] == 1 && (neighbours == 2 || neighbours == 3)){
+                newMap[row][col]=1;
+            }
+            else if(map[row][col] == 0 && neighbours == 3){
+                newMap[row][col] =1;
+            }
+            else newMap[row][col] =0;
+    }
 
-    public void showMap(int[][] map) {
+    public void showMap() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j<map[0].length; j++) {
-                System.out.print(map[i][j]);
+                if (map[i][j] == 1){
+                    System.out.print("0");
+                }
+                else System.out.print("_");
             }
             System.out.println(" ");
         }
         System.out.println(" ");
     }
 
-    public void runProgram(int[][] map, int simLength){
-        for (int i = 0; i<simLength; i++){
-            System.out.println(CountNeighbours(map, 0, 13));
-            int [][]newMap = newIteration(map);
-            map = newMap;
-            showMap(map);
-            try{
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+    public int StartingCol(int id){
+        int mod = cols % NumThreads;
+        if (id == 0){
+            return 0;
         }
+        else if(mod > id && id > 0){
+            return id * (cols / NumThreads) + id;
+        }
+        else return id * (cols / NumThreads) + mod;
+    }
+
+    public int EndingCol(int id){
+        int mod = cols % NumThreads;
+        if(id == 0 && mod == 0){
+            return (cols/NumThreads)-1;
+        }
+        else if (id == 0 & mod != 0){
+            return (cols/NumThreads);
+        }
+        else if(mod > id && id > 0){
+            return (id + 1) * (cols / NumThreads) + id;
+        }
+        else return (id + 1) * (cols / NumThreads) + mod - 1;
+    }
+
+    public void ShowThreadBorders(){
+        for (int i = 0; i < NumThreads; i++){
+            int MinBorder = StartingCol(i);
+            int TopBorder = EndingCol(i);
+            System.out.println("tid: " + i + " rows (0:" + (rows-1)+ ") cols: (" + MinBorder +":" + TopBorder + ") (" + (TopBorder-MinBorder+1) + ")");
+        }
+    }
+
+    public void runProgram() throws InterruptedException {
+        showMap();
+        for (int i = 0; i<SimLength; i++){
+            newGen();
+            Thread.sleep(2000);
+            showMap();
+            Thread.sleep(500);
+
+        }
+        System.out.println("Stan koncowy:");
+        showMap();
     }
 
     public void setMap(int[][] map) {
         this.map = map;
     }
 
-    public int[][] getMap() {
-        return map;
+    public void setNewMap(int[][] newMap) {
+        this.newMap = newMap;
     }
 }
