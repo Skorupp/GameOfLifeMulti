@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.*;
 
 public class CellManager  {
@@ -151,10 +150,8 @@ public class CellManager  {
         showMap();
         for (int i = 0; i<SimLength; i++){
             newGen();
-            Thread.sleep(1000);
+            Thread.sleep(750);
             showMap();
-
-
         }
         System.out.println("Stan koncowy:");
         showMap();
