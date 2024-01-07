@@ -160,8 +160,4 @@ public class CellManager  {
     public void setMap(int[][] map) {
         this.map = map;
     }
-
-    public void setNewMap(int[][] newMap) {
-        this.newMap = newMap;
-    }
 }
